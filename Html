@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Code Viewer</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow: auto;
+      max-height: 70vh;
+      border: 1px solid #ddd;
+    }
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 20px 0;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .success {
+      color: #4CAF50;
+      display: none;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>App Code Viewer</h1>
+  <button id="copyBtn" class="button">Copy All Code</button>
+  <span id="copySuccess" class="success">✓ Copied to clipboard!</span>
+  
+  <pre id="codeContent">Loading code...</pre>
+
+  <script>
+    // Load the code file
+    fetch('app-code-export.txt')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('codeContent').textContent = data;
+      })
+      .catch(error => {
+        document.getElementById('codeContent').textContent = 'Error loading code: ' + error + '\n\nMake sure you ran the export-code.js script first.';
+      });
+
+    // Copy button functionality
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      const codeContent = document.getElementById('codeContent').textContent;
+      navigator.clipboard.writeText(codeContent)
+        .then(() => {
+          const success = document.getElementById('copySuccess');
+          success.style.display = 'inline';
+          setTimeout(() => {
+            success.style.display = 'none';
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+          alert('Failed to copy code to clipboard');
+        });
+    });
+  </script>
+</body>
+</html>
